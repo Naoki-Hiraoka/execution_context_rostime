@@ -62,7 +62,6 @@ int ROSTimePeriodicExecutionContext::svc(void)
           RTC_PARANOID(("Slept:     %f [s]", (double)(t3 - t2)));
           count = 0;
         }
-      std::cerr << count << std::endl;
       ++count;
     } while (m_svc);
 
