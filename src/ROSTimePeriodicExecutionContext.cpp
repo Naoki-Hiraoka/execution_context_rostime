@@ -40,13 +40,10 @@ int ROSTimePeriodicExecutionContext::svc(void)
       m_worker.mutex_.unlock();
       ros::Time t1_ = ros::Time::now();
       coil::TimeValue t1(t1_.sec,t1_.nsec/1000);
-      {
-        RTC_PARANOID(("Period:    %f [s]", (double)m_period));
-        RTC_PARANOID(("Execution: %f [s]", (double)(t1 - t0)));
-        RTC_PARANOID(("Sleep:     %f [s]", (double)(m_period - (t1 - t0))));
+
+      if ((double)(t1 - t0) > m_period){
+        std::cerr<<"[ROSTimeEC] Timeover: processing time = "<<(double)(t1 - t0)<<"[ms]"<<std::endl;
       }
-      ros::Time t2_ = ros::Time::now();
-      coil::TimeValue t2(t2_.sec,t2_.nsec/1000);
 
       // ROS::Timeは/clockが届いたときにしか変化しない. /clockの周期と制御周期が近い場合、単純なcoil::sleep(m_period - (t1 - t0))では誤差が大きい
       while (!m_nowait && m_period > (t1 - t0))
@@ -55,13 +52,7 @@ int ROSTimePeriodicExecutionContext::svc(void)
           t1_ = ros::Time::now();
           t1 = coil::TimeValue(t1_.sec,t1_.nsec/1000);
         }
-      if (count > 1000)
-        {
-          ros::Time t3_ = ros::Time::now();
-          coil::TimeValue t3(t3_.sec,t3_.nsec/1000);
-          RTC_PARANOID(("Slept:     %f [s]", (double)(t3 - t2)));
-          count = 0;
-        }
+
       ++count;
     } while (m_svc);
 
