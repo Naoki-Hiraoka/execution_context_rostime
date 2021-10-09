@@ -42,7 +42,7 @@ int ROSTimePeriodicExecutionContext::svc(void)
       coil::TimeValue t1(t1_.sec,t1_.nsec/1000);
 
       if ((double)(t1 - t0) > m_period){
-        std::cerr<<"[ROSTimeEC] Timeover: processing time = "<<(double)(t1 - t0)<<"[ms]"<<std::endl;
+        std::cerr<<"[ROSTimeEC] Timeover: processing time = "<<(double)(t1 - t0)<<"[s]"<<std::endl;
       }
 
       // ROS::Timeは/clockが届いたときにしか変化しない. /clockの周期と制御周期が近い場合、単純なcoil::sleep(m_period - (t1 - t0))では誤差が大きい
