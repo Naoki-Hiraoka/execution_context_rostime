@@ -5,7 +5,6 @@
 ROSTimePeriodicExecutionContext::ROSTimePeriodicExecutionContext()
     : PeriodicExecutionContext()
 {
-  std::cerr << "gen" <<std::endl;
 }
 
 ROSTimePeriodicExecutionContext::~ROSTimePeriodicExecutionContext()
