@@ -32,9 +32,16 @@ int ROSTimePeriodicExecutionContext::svc(void)
         }
       ros::Time t0_ = ros::Time::now();
       coil::TimeValue t0(t0_.sec,t0_.nsec/1000);
+
+      std::vector<double> processTimes(m_comps.size());
       if (m_worker.running_)
         {
-          std::for_each(m_comps.begin(), m_comps.end(), invoke_worker());
+          for(int i=0;i<m_comps.size();i++){
+            coil::TimeValue before(coil::gettimeofday());
+            invoke_worker()(m_comps[i]);
+            coil::TimeValue after(coil::gettimeofday());
+            processTimes[i] = double(after - before);
+          }
         }
       m_worker.mutex_.unlock();
       ros::Time t1_ = ros::Time::now();
@@ -42,6 +49,10 @@ int ROSTimePeriodicExecutionContext::svc(void)
 
       if ((double)(t1 - t0) > m_period){
         std::cerr<<"[ROSTimeEC] Timeover: processing time = "<<(double)(t1 - t0)<<"[s]"<<std::endl;
+        for(int i=0;i<m_comps.size();i++){
+          std::cerr << RTC::RTObject::_narrow(m_comps[i]._ref)->get_component_profile()->instance_name<<"("<<processTimes[i]<<"), ";
+        }
+        std::cerr << std::endl;
       }
 
       // ROS::Timeは/clockが届いたときにしか変化しない. /clockの周期と制御周期が近い場合、単純なcoil::sleep(m_period - (t1 - t0))では誤差が大きい

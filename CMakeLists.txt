@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(execution_context_rostime)
 
-## Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
+add_compile_options(-std=c++11)
+set(CMAKE_BUILD_TYPE Release)
 
 # openrtm has deprecated coding. This causes too many warnings.
 #   warning: dynamic exception specifications are deprecated in C++11
