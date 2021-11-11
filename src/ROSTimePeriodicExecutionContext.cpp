@@ -56,6 +56,7 @@ int ROSTimePeriodicExecutionContext::svc(void)
       }
 
       // ROS::Timeは/clockが届いたときにしか変化しない. /clockの周期と制御周期が近い場合、単純なcoil::sleep(m_period - (t1 - t0))では誤差が大きい
+      // ros::Rate::sleepは内部で1ms間隔でsleepするため、粗すぎる
       while (!m_nowait && m_period > (t1 - t0))
         {
           coil::sleep((coil::TimeValue)(double(m_period) / 100));
