@@ -50,7 +50,8 @@ int ROSTimePeriodicExecutionContext::svc(void)
       if ((double)(t1 - t0) > m_period){
         std::cerr<<"[ROSTimeEC] Timeover: processing time = "<<(double)(t1 - t0)<<"[s]"<<std::endl;
         for(int i=0;i<m_comps.size();i++){
-          std::cerr << RTC::RTObject::_narrow(m_comps[i]._ref)->get_component_profile()->instance_name<<"("<<processTimes[i]<<"), ";
+          RTC::ComponentProfile_var profile = RTC::RTObject::_narrow(m_comps[i]._ref)->get_component_profile(); // get_component_profile() はポインタを返すので、呼び出し側で release するか、_var型変数で受ける必要がある
+          std::cerr << profile->instance_name<<"("<<processTimes[i]<<"), ";
         }
         std::cerr << std::endl;
       }
