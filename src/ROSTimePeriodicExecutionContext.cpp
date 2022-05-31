@@ -46,6 +46,7 @@ int ROSTimePeriodicExecutionContext::svc(void)
       m_worker.mutex_.unlock();
       ros::Time t1_ = ros::Time::now();
       coil::TimeValue t1(t1_.sec,t1_.nsec/1000);
+      if((double)(t1 - t0) < 0) t0 = t1; //巻き戻り
 
       if ((double)(t1 - t0) > m_period){
         std::cerr<<"[ROSTimeEC] Timeover: processing time = "<<(double)(t1 - t0)<<"[s]"<<std::endl;
@@ -63,6 +64,7 @@ int ROSTimePeriodicExecutionContext::svc(void)
           coil::sleep((coil::TimeValue)(double(m_period) / 100));
           t1_ = ros::Time::now();
           t1 = coil::TimeValue(t1_.sec,t1_.nsec/1000);
+          if((double)(t1 - t0) < 0) t0 = t1; //巻き戻り
         }
 
       ++count;
